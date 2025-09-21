@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import { runSigil, getArchive } from "./api";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [sigil, setSigil] = useState(null);
+  const [archive, setArchive] = useState([]);
+
+  useEffect(() => {
+    getArchive().then(setArchive);
+  }, []);
+
+  const handleSigil = async () => {
+    const result = await runSigil("Action Scar");
+    setSigil(result);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="p-6 bg-black text-white min-h-screen">
+      <h1 className="text-3xl font-bold mb-6">ECHOSOMA Action Lab</h1>
+      
+      <button
+        onClick={handleSigil}
+        className="bg-indigo-600 px-4 py-2 rounded-lg shadow-md"
+      >
+        Generate Sigil
+      </button>
 
-export default App
+      {sigil && (
+        <div className="mt-4">
+          <p>Scar Value: {sigil.scar_val.toFixed(3)}</p>
+          <p>Seed: {sigil.input_text}</p>
+        </div>
+      )}
+
+      <h2 className="text-xl mt-6">Scar Archive</h2>
+      <ul>
+        {archive.map((a, i) => (
+          <li key={i}>{a.glyph} — {a.reflection}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
