@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:8000"; // backend URL
+const API = "https://echosoma-lab.onrender.com/";
 
 export async function runSigil(text) {
   const res = await axios.post(`${API}/sigil?text=${text}`);
